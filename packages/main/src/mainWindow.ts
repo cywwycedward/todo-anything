@@ -2,7 +2,9 @@ import {app, BrowserWindow} from 'electron';
 import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-async function createWindow() {
+let mainWindow:BrowserWindow;
+
+async function createMainWindow() {
   const browserWindow = new BrowserWindow({
     show: false, // Use the 'ready-to-show' event to show the instantiated BrowserWindow.
     webPreferences: {
@@ -52,7 +54,6 @@ async function createWindow() {
       fileURLToPath(new URL('./../../renderer/dist/index.html', import.meta.url)),
     );
   }
-
   return browserWindow;
 }
 
@@ -60,10 +61,12 @@ async function createWindow() {
  * Restore an existing BrowserWindow or Create a new BrowserWindow.
  */
 export async function restoreOrCreateWindow() {
-  let window = BrowserWindow.getAllWindows().find(w => !w.isDestroyed());
+  // let window = BrowserWindow.getAllWindows().find(w => !w.isDestroyed());
+  let window = mainWindow;
 
   if (window === undefined) {
-    window = await createWindow();
+    window = await createMainWindow();
+    mainWindow = window;
   }
 
   if (window.isMinimized()) {
@@ -72,3 +75,5 @@ export async function restoreOrCreateWindow() {
 
   window.focus();
 }
+
+export {mainWindow};

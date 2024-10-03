@@ -1,9 +1,10 @@
-import {app} from 'electron';
+import {app,ipcMain} from 'electron';
 import './security-restrictions';
-import {restoreOrCreateWindow} from '/@/mainWindow.js';
+import {restoreOrCreateWindow,mainWindow} from '/@/mainWindow.js';
+import { createFloatingBar } from '/@/floating_bar.js';
+import {createWindow} from '/@/window.js';
 import {platform} from 'node:process';
 import updater from 'electron-updater';
-
 /**
  * Prevent electron from running multiple instances.
  */
@@ -38,7 +39,15 @@ app.on('activate', restoreOrCreateWindow);
  */
 app
   .whenReady()
-  .then(restoreOrCreateWindow)
+  .then(()=>{
+    ipcMain.handle('window:create',async (event,html:string,preload?:string,has_frame:boolean=true,safe_mode:boolean=true)=>{
+        return await createWindow(html,preload,has_frame,safe_mode,mainWindow);
+    });
+    ipcMain.handle('window:createFloatingBar',async (event)=>{
+      return await createFloatingBar(mainWindow);
+    });
+    restoreOrCreateWindow();
+  })
   .catch(e => console.error('Failed create window:', e));
 
 /**

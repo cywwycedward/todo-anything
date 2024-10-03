@@ -21,7 +21,10 @@ const config = {
     assetsDir: '.',
     minify: process.env.MODE !== 'development',
     lib: {
-      entry: 'src/index.ts',
+      entry: {
+        index:'src/index.ts',
+        floating_bar: 'src/floating_bar.ts',
+      },
       formats: ['es'],
     },
     rollupOptions: {

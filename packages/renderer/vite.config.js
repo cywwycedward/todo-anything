@@ -31,7 +31,10 @@ const config = {
     outDir: 'dist',
     assetsDir: '.',
     rollupOptions: {
-      input: join(PACKAGE_ROOT, 'index.html'),
+      input: {
+        index:join(PACKAGE_ROOT, 'index.html'),
+        sub: join(PACKAGE_ROOT, 'floating_bar.html'),
+      },
     },
     emptyOutDir: true,
     reportCompressedSize: false,
